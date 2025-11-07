@@ -2,47 +2,54 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    protected $table = 'users';
+    protected $primaryKey = 'iduser';
+
     protected $fillable = [
         'name',
+        'lastname',
         'email',
         'password',
+        'country',
+        'phone',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $hidden = ['password'];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    public function getRouteKeyName()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return 'iduser';
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'roles_users', 'users_iduser', 'roles_idrole');
+    }
+
+    public function deliveries()
+    {
+        return $this->hasMany(Delivery::class, 'users_iduser', 'iduser');
+    }
+
+    public function carts()
+    {
+        return $this->hasMany(Cart::class, 'iduser', 'iduser');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'users_iduser', 'iduser');
+    }
+
+    public function companies()
+    {
+        return $this->hasMany(Company::class, 'users_iduser', 'iduser');
     }
 }

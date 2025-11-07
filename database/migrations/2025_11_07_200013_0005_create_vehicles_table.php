@@ -1,0 +1,25 @@
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void {
+        Schema::create('vehicles', function (Blueprint $table) {
+            $table->id('idvehicle');
+            $table->string('brand',45)->nullable();
+            $table->string('model',45)->nullable();
+            $table->string('year',45)->nullable();
+            $table->string('plate',45)->nullable();
+            $table->unsignedBigInteger('deliveries_iddelivery')->nullable();
+            $table->timestamps();
+
+            $table->foreign('deliveries_iddelivery')->references('iddelivery')->on('deliveries')->onDelete('cascade');
+        });
+    }
+    public function down(): void {
+        Schema::dropIfExists('vehicles');
+    }
+};
